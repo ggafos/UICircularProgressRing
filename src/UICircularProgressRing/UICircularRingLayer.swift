@@ -45,6 +45,8 @@ class UICircularRingLayer: CAShapeLayer {
 
     /// formatter for the text of the value label
     var valueFormatter: UICircularRingValueFormatter?
+    
+    var outerPath: UIBezierPath?
 
     // MARK: Animation members
 
@@ -167,6 +169,9 @@ class UICircularRingLayer: CAShapeLayer {
                                      startAngle: start,
                                      endAngle: end,
                                      clockwise: true)
+        
+        self.outerPath = outerPath
+        
         outerPath.lineWidth = ring.outerRingWidth
         outerPath.lineCapStyle = ring.outerCapStyle
 
@@ -202,7 +207,8 @@ class UICircularRingLayer: CAShapeLayer {
         ctx.setLineJoin(.round)
         ctx.setLineCap(ring.innerCapStyle)
         ctx.setStrokeColor(ring.innerRingColor.cgColor)
-        ctx.addPath(innerPath.cgPath)
+        //ctx.addPath(innerPath.cgPath)
+        ctx.addPath(outerPath!.cgPath)
         ctx.drawPath(using: .stroke)
 
         if let gradientOptions = ring.gradientOptions {
