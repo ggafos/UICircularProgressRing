@@ -186,69 +186,97 @@ class UICircularRingLayer: CAShapeLayer {
      Sets path properties according to how the user has decided to customize the view.
      */
     private func drawInnerRing(in ctx: CGContext) {
-        guard ring.innerRingWidth > 0 else { return }
-
-        let center: CGPoint = CGPoint(x: bounds.midX, y: bounds.midY)
-
-        let innerEndAngle = calculateInnerEndAngle()
-        let radiusIn = calculateInnerRadius()
-
-        // 1st comment
-        // Start drawing
-        let innerPath: UIBezierPath = UIBezierPath(arcCenter: center,
-                                                   radius: radiusIn,
-                                                   startAngle: ring.startAngle.rads,
-                                                   endAngle: innerEndAngle.rads,
-                                                   clockwise: ring.isClockwise)
+        guard ring.outerRingWidth > 0 else { return }
+            let center: CGPoint = CGPoint(x: bounds.midX, y: bounds.midY)
+            let offSet = calculateOuterRingOffset()
+            let outerRadius = min(bounds.width, bounds.height) / 2 - offSet
+            let start = ring.fullCircle ? 0 : ring.startAngle.rads
+            //let end = ring.fullCircle ? .pi * 2 : ring.endAngle.rads
         
-        //let offSet = calculateOuterRingOffset()
-        //let outerRadius = min(bounds.width, bounds.height) / 2 - offSet
-        //updateOuterRingPath(innerPath, radius: outerRadius, style: ring.style)
-        
-        innerPath.setLineDash([2,3], count: 2, phase: 0.0)
+            let endAngle:CGFloat = 240.0
+            let outerEndAngle = endAngle.rads
+            
+            let outerPath = UIBezierPath(arcCenter: center,
+                                         radius: outerRadius,
+                                         startAngle: outerEndAngle,
+                                         endAngle: start,
+                                         clockwise: false)
+            outerPath.lineWidth = ring.outerRingWidth
+            outerPath.lineCapStyle = ring.outerCapStyle
 
-        // Draw path
-        ctx.setLineWidth(ring.innerRingWidth)
-        ctx.setLineJoin(.round)
-        ctx.setLineCap(ring.innerCapStyle)
-        ctx.setStrokeColor(ring.innerRingColor.cgColor)
-        ctx.addPath(innerPath.cgPath)
+            // Update path depending on style of the ring
+            updateOuterRingPath(outerPath, radius: outerRadius, style: ring.style)
+
+        ctx.setStrokeColor(UIColor.yellow.cgColor)
+        ctx.addPath(outerPath.cgPath)
         ctx.drawPath(using: .stroke)
-
-        if let gradientOptions = ring.gradientOptions {
-            // Create gradient and draw it.
-            var cgColors: [CGColor] = [CGColor]()
-            for color: UIColor in gradientOptions.colors {
-                cgColors.append(color.cgColor)
-            }
-
-            guard let gradient: CGGradient = CGGradient(colorsSpace: nil,
-                                                        colors: cgColors as CFArray,
-                                                        locations: gradientOptions.colorLocations)
-            else {
-                fatalError("\nUnable to create gradient for progress ring.\n" +
-                    "Check values of gradientColors and gradientLocations.\n")
-            }
-
-            ctx.saveGState()
-            ctx.addPath(innerPath.cgPath)
-            ctx.replacePathWithStrokedPath()
-            ctx.clip()
-
-            drawGradient(gradient,
-                         start: gradientOptions.startPosition,
-                         end: gradientOptions.endPosition,
-                         in: ctx)
-
-            ctx.restoreGState()
-        }
-
-        if let knobStyle = ring.valueKnobStyle, ((value > minValue) || (ring?.shouldDrawMinValueKnob ?? false)) {
-            let knobOffset = knobStyle.size / 2
-            drawValueKnob(in: ctx, origin: CGPoint(x: innerPath.currentPoint.x - knobOffset,
-                                                   y: innerPath.currentPoint.y - knobOffset))
-        }
+            
     }
+    
+    
+//    private func drawInnerRing(in ctx: CGContext) {
+//        guard ring.innerRingWidth > 0 else { return }
+//
+//        let center: CGPoint = CGPoint(x: bounds.midX, y: bounds.midY)
+//
+//        let innerEndAngle = calculateInnerEndAngle()
+//        let radiusIn = calculateInnerRadius()
+//
+//        // 1st comment
+//        // Start drawing
+//        let innerPath: UIBezierPath = UIBezierPath(arcCenter: center,
+//                                                   radius: radiusIn,
+//                                                   startAngle: ring.startAngle.rads,
+//                                                   endAngle: innerEndAngle.rads,
+//                                                   clockwise: ring.isClockwise)
+//
+//        //let offSet = calculateOuterRingOffset()
+//        //let outerRadius = min(bounds.width, bounds.height) / 2 - offSet
+//        //updateOuterRingPath(innerPath, radius: outerRadius, style: ring.style)
+//        //innerPath.setLineDash([2,3], count: 2, phase: 0.0)
+//
+//        // Draw path
+//        //ctx.setLineWidth(ring.innerRingWidth)
+//        //ctx.setLineJoin(.round)
+//        //ctx.setLineCap(ring.innerCapStyle)
+//        ctx.setStrokeColor(yellow.cgColor)
+//        ctx.addPath(innerPath.cgPath)
+//        ctx.drawPath(using: .stroke)
+//
+////        if let gradientOptions = ring.gradientOptions {
+////            // Create gradient and draw it.
+////            var cgColors: [CGColor] = [CGColor]()
+////            for color: UIColor in gradientOptions.colors {
+////                cgColors.append(color.cgColor)
+////            }
+////
+////            guard let gradient: CGGradient = CGGradient(colorsSpace: nil,
+////                                                        colors: cgColors as CFArray,
+////                                                        locations: gradientOptions.colorLocations)
+////            else {
+////                fatalError("\nUnable to create gradient for progress ring.\n" +
+////                    "Check values of gradientColors and gradientLocations.\n")
+////            }
+////
+////            ctx.saveGState()
+////            ctx.addPath(innerPath.cgPath)
+////            ctx.replacePathWithStrokedPath()
+////            ctx.clip()
+////
+////            drawGradient(gradient,
+////                         start: gradientOptions.startPosition,
+////                         end: gradientOptions.endPosition,
+////                         in: ctx)
+////
+////            ctx.restoreGState()
+////        }
+////
+////        if let knobStyle = ring.valueKnobStyle, ((value > minValue) || (ring?.shouldDrawMinValueKnob ?? false)) {
+////            let knobOffset = knobStyle.size / 2
+////            drawValueKnob(in: ctx, origin: CGPoint(x: innerPath.currentPoint.x - knobOffset,
+////                                                   y: innerPath.currentPoint.y - knobOffset))
+////        }
+//    }
 
     /// Updates the outer ring path depending on the ring's style
     private func updateOuterRingPath(_ path: UIBezierPath, radius: CGFloat, style: UICircularRingStyle) {
