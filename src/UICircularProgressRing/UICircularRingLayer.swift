@@ -162,14 +162,14 @@ class UICircularRingLayer: CAShapeLayer {
         let outerRadius = min(bounds.width, bounds.height) / 2 - offSet
         let start = ring.fullCircle ? 0 : ring.startAngle.rads
         let end = ring.fullCircle ? .pi * 2 : ring.endAngle.rads
-        
-        
-        let innerEndAngle = calculateInnerEndAngle()
+    
+        let endAngle:CGFloat = 240.0
+        let outerEndAngle = endAngle.rads
         
         let outerPath = UIBezierPath(arcCenter: center,
                                      radius: outerRadius,
                                      startAngle: start,
-                                     endAngle: innerEndAngle.rads,
+                                     endAngle: outerEndAngle,
                                      clockwise: true)
         outerPath.lineWidth = ring.outerRingWidth
         outerPath.lineCapStyle = ring.outerCapStyle
