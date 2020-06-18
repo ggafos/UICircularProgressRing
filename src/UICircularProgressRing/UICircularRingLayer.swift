@@ -197,9 +197,11 @@ class UICircularRingLayer: CAShapeLayer {
                                                    endAngle: innerEndAngle.rads,
                                                    clockwise: ring.isClockwise)
         
-        let offSet = calculateOuterRingOffset()
-        let outerRadius = min(bounds.width, bounds.height) / 2 - offSet
-        updateOuterRingPath(innerPath, radius: outerRadius, style: ring.style)
+        //let offSet = calculateOuterRingOffset()
+        //let outerRadius = min(bounds.width, bounds.height) / 2 - offSet
+        //updateOuterRingPath(innerPath, radius: outerRadius, style: ring.style)
+        
+        innerPath.setLineDash([2,3], count: 2, phase: 0.0)
 
         // Draw path
         ctx.setLineWidth(ring.innerRingWidth)
