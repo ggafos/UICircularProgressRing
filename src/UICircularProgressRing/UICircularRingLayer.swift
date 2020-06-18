@@ -189,6 +189,7 @@ class UICircularRingLayer: CAShapeLayer {
         let innerEndAngle = calculateInnerEndAngle()
         let radiusIn = calculateInnerRadius()
 
+        // 1st comment
         // Start drawing
         let innerPath: UIBezierPath = UIBezierPath(arcCenter: center,
                                                    radius: radiusIn,
