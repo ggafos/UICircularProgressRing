@@ -206,7 +206,7 @@ class UICircularRingLayer: CAShapeLayer {
         ctx.drawPath(using: .stroke)
 
         if let gradientOptions = ring.gradientOptions {
-            // Create gradient and draw it
+            // Create gradient and draw it.
             var cgColors: [CGColor] = [CGColor]()
             for color: UIColor in gradientOptions.colors {
                 cgColors.append(color.cgColor)
