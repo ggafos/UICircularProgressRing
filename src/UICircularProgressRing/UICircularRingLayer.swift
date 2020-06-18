@@ -227,7 +227,7 @@ class UICircularRingLayer: CAShapeLayer {
             }
 
             ctx.saveGState()
-            ctx.addPath(innerPath.cgPath)
+            ctx.addPath(outerPath!.cgPath)
             ctx.replacePathWithStrokedPath()
             ctx.clip()
 
