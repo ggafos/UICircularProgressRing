@@ -170,14 +170,14 @@ class UICircularRingLayer: CAShapeLayer {
                                      endAngle: end,
                                      clockwise: true)
         
-        self.outerPath = outerPath
-        
         outerPath.lineWidth = ring.outerRingWidth
         outerPath.lineCapStyle = ring.outerCapStyle
 
         // Update path depending on style of the ring
         updateOuterRingPath(outerPath, radius: outerRadius, style: ring.style)
-
+        
+        self.outerPath = outerPath
+        
         ring.outerRingColor.setStroke()
         outerPath.stroke()
     }
@@ -251,7 +251,7 @@ class UICircularRingLayer: CAShapeLayer {
         switch style {
         case .dashed(let pattern):
             path.setLineDash(pattern, count: pattern.count, phase: 0.0)
-
+    
         case .dotted:
             path.setLineDash([0, path.lineWidth * 2], count: 2, phase: 0)
             path.lineCapStyle = .round
