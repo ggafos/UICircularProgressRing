@@ -194,7 +194,6 @@ class UICircularRingLayer: CAShapeLayer {
         let innerEndAngle = calculateInnerEndAngle()
         let radiusIn = calculateInnerRadius()
 
-        // 1st comment
         // Start drawing
         let innerPath: UIBezierPath = UIBezierPath(arcCenter: center,
                                                    radius: radiusIn,
@@ -208,8 +207,8 @@ class UICircularRingLayer: CAShapeLayer {
         ctx.setLineCap(ring.innerCapStyle)
         ctx.setStrokeColor(ring.innerRingColor.cgColor)
         //ctx.addPath(innerPath.cgPath)
-        ctx.addPath(outerPath!.cgPath)
-        ctx.drawPath(using: .stroke)
+        //ctx.addPath(outerPath!.cgPath)
+        //ctx.drawPath(using: .stroke)
 
         if let gradientOptions = ring.gradientOptions {
             // Create gradient and draw it
