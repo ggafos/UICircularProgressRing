@@ -193,20 +193,24 @@ class UICircularRingLayer: CAShapeLayer {
             let start = ring.fullCircle ? 0 : ring.startAngle.rads
             //let end = ring.fullCircle ? .pi * 2 : ring.endAngle.rads
         
-            let endAngle:CGFloat = 240.0
+            let endAngle:CGFloat = 260.0
             let outerEndAngle = endAngle.rads
             
-            let outerPath = UIBezierPath(arcCenter: center,
-                                         radius: outerRadius,
-                                         startAngle: outerEndAngle,
-                                         endAngle: start,
-                                         clockwise: false)
+              let outerPath = UIBezierPath(arcCenter: center,
+                                               radius: outerRadius,
+                                               startAngle: start,
+                                               endAngle: outerEndAngle,
+                                               clockwise: true)
+        
             outerPath.lineWidth = ring.outerRingWidth
             outerPath.lineCapStyle = ring.outerCapStyle
 
             // Update path depending on style of the ring
             updateOuterRingPath(outerPath, radius: outerRadius, style: ring.style)
 
+        ctx.setLineWidth(ring.outerRingWidth)
+        ctx.setLineJoin(.round)
+        ctx.setLineCap(ring.outerCapStyle)
         ctx.setStrokeColor(UIColor.yellow.cgColor)
         ctx.addPath(outerPath.cgPath)
         ctx.drawPath(using: .stroke)
